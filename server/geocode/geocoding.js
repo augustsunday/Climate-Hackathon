@@ -1,18 +1,23 @@
-//Google API Key
-const api_key = AIzaSyDfQVi5YHKDZmPdwbMUXKMWRzCwfcdDhms
+import fetch from "node-fetch";
+const api_key = "your_api_key_here"
 
 //Convert zip code/address to latitude and longitude 
 function convertZipToCoord(address) {
+ 
     const api = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + api_key
-    fetch(api, {
-        method: 'get'
-    }).then(function (response) {
-        var coord = response[0].reuslts.geomery.location
-        return coord //this is a {lat, lng}. so when parsing these, use coord.lat and coord.lng
-    }).catch(function (err) {
-        alert("there is an error ", err)
-    })
-};
+       
+    var x = fetch(api) 
+        .then(response => response.json())
+        .then(json => (json.results[0].geometry.location))
+        .catch(err => console.log(err))
+
+    //If you check the console, you can see the lat/long getting logged
+    x.then(console.log)
+
+    //line that actually _returns_ value of x instead of a promise here VVV
+        
+}
+
 
 function convertcoordtoZip(lat, lng) {
     const api = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&key=' + api_key
@@ -22,7 +27,7 @@ function convertcoordtoZip(lat, lng) {
         var zip = response[0].results.address_components[7].long_name
         return zip //this is a string of sentence of full address
     }).catch(function (err) {
-        alert("there is an error ", err)
+        console.log("there is an error ", err)
     })
 };
 
