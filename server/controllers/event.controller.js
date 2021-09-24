@@ -9,9 +9,13 @@ import { convertZipToCoord } from '../geocode/geocoding.js'
 
 const create = async (req, res) => {
     const event = new Event(req.body)
-    //This is undefined until convertZipToCoord is fixed
-    let coord = convertZipToCoord(event.zip + " " + event.address)
-    console.log("Event Controller: " + convertZipToCoord(event.zip + " " + event.address))    
+
+    // Wait to get coordinates from zip code, then assign them to the document before saving
+    let coord = await convertZipToCoord(event.zip + " " + event.address)
+    event.latitude = coord["lat"]
+    console.log(event.latitude)
+    event.longitude = coord["lng"]
+
     try {
         await event.save()
         return res.status(200).json({
@@ -51,7 +55,7 @@ const read = (req, res) => {
 
 const list = async (req, res) => {
     try {
-        let events = await Event.find().select('event_type service_type name email updated created') //just selects these fields
+        let events = await Event.find().select('event_type service_type name email latitude longitude updated created') //just selects these fields
         res.json(events)
     } catch (err) {
         return res.status(400).json({

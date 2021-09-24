@@ -1,21 +1,16 @@
 import fetch from "node-fetch";
-const api_key = "your_api_key_here"
+const api_key = "your API key here"
 
 //Convert zip code/address to latitude and longitude 
 function convertZipToCoord(address) {
- 
+
     const api = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + api_key
-       
-    var x = fetch(api) 
+
+    return fetch(api)
         .then(response => response.json())
         .then(json => (json.results[0].geometry.location))
         .catch(err => console.log(err))
 
-    //If you check the console, you can see the lat/long getting logged
-    x.then(console.log)
-
-    //line that actually _returns_ value of x instead of a promise here VVV
-        
 }
 
 
